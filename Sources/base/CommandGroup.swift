@@ -1,3 +1,32 @@
+/**
+ * CommandGroup is a protocol that represents a group of commands.
+ *
+ * Each command group should implement the commands property to return an array of Command objects.
+ * Command groups also conform to the Command protocol, allowing them to be parsed and executed.
+ *
+ * Example:
+ * ```swift
+ * struct MyCommandGroup: CommandGroup {
+ *     var commands: [Command] = [RepeatCommand(), AnotherCommand()]
+ * }
+ *
+ * var group = MyCommandGroup()
+ * do {
+ *     try group.run()
+ * } catch {
+ *     print("Error: \(error)")
+ * }
+ * ```
+ *
+ * To execute a specific command, you can run your application with:
+ * ```
+ * ./yourApp commandName [options]
+ * ```
+ * 
+ * Use `--help` or `-h` to print a help message, listing available commands and their descriptions.
+ */
+
+
 protocol CommandGroup : Command{
     var commands: [Command] { get }
 }

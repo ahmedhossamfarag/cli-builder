@@ -1,11 +1,27 @@
 import Runtime
 import Foundation
 
+/**
+ * cli-builder is a command line interface builder for swift. It helps you define a cli interface with a simple and intuitive api.
+ *
+ * Usage:
+ *  define a command
+ *  
+ *  - `name` is the name of the command. It is used as the first argument in the cli.
+ *  - `help` is a help message for the command.
+ * 
+ *  ```swift
+ *  struct Repeat: Command{
+ *      @Argument
+ *      var message: String
+ *  }
+ *  ```
+ *
+ **/
+
 public protocol Command{
     var name: String { get }
     var help: String? { get }
-
-    mutating func parse(_ patterns: [String]) throws
 
     mutating func run() throws
 }
