@@ -27,7 +27,7 @@ extension CommandGroup{
                 return
             }
         }
-        throw CommandError.unknownCommand(name: commandName)
+        throw CommandError.UnknownCommand(name: commandName)
     }
 
     mutating func run() throws {

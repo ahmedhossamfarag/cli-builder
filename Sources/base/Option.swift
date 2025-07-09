@@ -16,13 +16,13 @@ struct Option<T>: IsOption {
 
     var type: Type
 
-    var defult: T?
-
-    var multiple: Bool = false
-
     var name: String?
 
     var short: String?
+
+    var multiple: Bool = false
+
+    var defult: T?
     
     var help: String?
 

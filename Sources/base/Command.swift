@@ -40,7 +40,7 @@ extension Command{
             }
             return args
         }catch{
-            throw CommandError.failedTogetArguments(of: String(describing: type(of: self)))
+            throw CommandError.FailedTogetArguments(of: String(describing: type(of: self)))
         }
     }
 
@@ -63,7 +63,7 @@ extension Command{
             }
             return flags
         }catch{
-            throw CommandError.failedTogetFlags(of: String(describing: type(of: self)))
+            throw CommandError.FailedTogetFlags(of: String(describing: type(of: self)))
         }
     }
 
@@ -86,7 +86,7 @@ extension Command{
             }
             return options
         }catch{
-            throw CommandError.failedTogetOptions(of: String(describing: type(of: self)))
+            throw CommandError.FailedTogetOptions(of: String(describing: type(of: self)))
         }
     }
 
@@ -101,11 +101,11 @@ extension Command{
         var flags = try getFlags()
 
         if patterns.count < args.count {
-            throw CommandError.tooFewArguments
+            throw CommandError.TooFewArguments(should: args.count, got: patterns.count)
         }
         for i in 0 ..< args.count {
             var arg = args[i].1
-            arg.value = try arg.type.cast(value: patterns[i])
+            arg.value = try arg.cast(value: patterns[i])
             let prop = args[i].0
             try prop.set(value: arg, on: &self)
         }
@@ -120,17 +120,25 @@ extension Command{
                 i += 1
             }else if let option = opts[patterns[i]] {
                 if (i + 1) >= patterns.count {
-                    throw CommandError.unsetOption(name: patterns[i])
+                    throw CommandError.UnsetOption(name: patterns[i])
                 }
                 var (prop, option) = option
-                option.value = try option.type.cast(value: patterns[i + 1])
+                if(option.multiple){
+                    if option.value == nil {
+                        option.value = [Any]()
+                    }
+                    option.value = [Any](option.value as! [Any] + [try option.cast(value: patterns[i + 1])])
+                    opts.updateValue((prop, option), forKey: patterns[i])
+                }else{
+                    option.value = try option.cast(value: patterns[i + 1])
+                }
                 try prop.set(value: option, on: &self)
                 if !option.multiple {
                     opts.removeValue(forKey: patterns[i])
                 }
                 i += 2
             }else{
-                throw CommandError.unknownOption(name: patterns[i])
+                throw CommandError.UnknownOption(name: patterns[i])
             }
         }
 
