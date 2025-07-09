@@ -44,7 +44,7 @@ extension Command{
         }
     }
 
-    func getFlags() throws -> [String: (PropertyInfo, IsFlag)]{
+    func getFlags(unique: Bool = false) throws -> [String: (PropertyInfo, IsFlag)]{
         do{
             let info = try typeInfo(of: type(of: self))
             var flags = [String: (PropertyInfo, IsFlag)]()
@@ -55,7 +55,7 @@ extension Command{
                             flag.name = prop.name.suffix(from: 1)
                         }
                         flags["--" + flag.name!] = (prop, flag)
-                        if flag.short != nil {
+                        if flag.short != nil && !unique {
                             flags["-" + flag.short!] = (prop, flag)
                         }
                     }
@@ -67,7 +67,7 @@ extension Command{
         }
     }
 
-    func getOptions() throws -> [String: (PropertyInfo, IsOption)]{
+    func getOptions(unique: Bool = false) throws -> [String: (PropertyInfo, IsOption)]{
         do{
             let info = try typeInfo(of: type(of: self))
             var options = [String: (PropertyInfo, IsOption)]()
@@ -78,7 +78,7 @@ extension Command{
                             option.name = prop.name.suffix(from: 1)
                         }
                         options["--" + option.name!] = (prop, option)
-                        if option.short != nil {
+                        if option.short != nil && !unique {
                             options["-" + option.short!] = (prop, option)
                         }
                     }
@@ -147,10 +147,11 @@ extension Command{
 
     func printHelp() throws{
         let args = try getArguments()
-        let opts = try getOptions()
-        let flags = try getFlags()
+        let opts = try getOptions(unique: true)
+        let flags = try getFlags(unique: true)
         print("\(name) \(args.map{$0.1.name!.uppercased()}.joined(separator: " "))")
         if let help = help {
+            print()
             print(help)
         }
         print();
@@ -161,15 +162,17 @@ extension Command{
             }
         }
         if !opts.isEmpty{
+            print()
             print("Options:")
             for opt in opts {
-                print("  \(opt.1.1.name!), \(opt.1.1.short ?? "") \t \(opt.1.1.help ?? "")")
+                print("  --\(opt.1.1.name!), \(opt.1.1.short != nil ? "-" + opt.1.1.short! : "") \t \(opt.1.1.help ?? "")")
             }
         }
         if !flags.isEmpty{
+            print()
             print("Flags:")
             for flag in flags {
-                print("  \(flag.1.1.name!), \(flag.1.1.short ?? "") \t \(flag.1.1.help ?? "")")
+                print("  \(flag.1.1.name!), \(flag.1.1.short != nil ? "-" + flag.1.1.short! : "") \t \(flag.1.1.help ?? "")")
             }
         }
     }
