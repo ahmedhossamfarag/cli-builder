@@ -1,0 +1,22 @@
+{
+    "configurations": [
+        {
+            "type": "lldb",
+            "request": "launch",
+            "args": [],
+            "cwd": "${workspaceFolder:cli-builder}",
+            "name": "Debug cli-builder",
+            "program": "${workspaceFolder:cli-builder}/.build/debug/cli-builder",
+            "preLaunchTask": "swift: Build Debug cli-builder"
+        },
+        {
+            "type": "swift",
+            "request": "launch",
+            "args": [],
+            "cwd": "${workspaceFolder:cli-builder}",
+            "name": "Release cli-builder",
+            "program": "${workspaceFolder:cli-builder}/.build/release/cli-builder",
+            "preLaunchTask": "swift: Build Release cli-builder"
+        }
+    ]
+}
