@@ -66,7 +66,7 @@ extension CommandGroup{
     }
 
     func printHelp() throws {
-        print("Group: \(name)")
+        print(name)
         if let help = help {
             print(help)
         }

@@ -140,11 +140,11 @@ extension Command{
                 }
                 var (prop, option) = option
                 if(option.multiple){
+                    option = try prop.get(from: self) as! IsOption
                     if option.value == nil {
                         option.value = [Any]()
                     }
                     option.value = [Any](option.value as! [Any] + [try option.cast(value: patterns[i + 1])])
-                    opts.updateValue((prop, option), forKey: patterns[i])
                 }else{
                     option.value = try option.cast(value: patterns[i + 1])
                 }
@@ -165,7 +165,7 @@ extension Command{
         let args = try getArguments()
         let opts = try getOptions(unique: true)
         let flags = try getFlags(unique: true)
-        print("\(name) \(args.map{$0.1.name!.uppercased()}.joined(separator: " "))")
+        print("\(name) \(args.map{$0.1.name!.uppercased()}.joined(separator: " "))\(args.count > 0 ? " " : "")[options|flags]")
         if let help = help {
             print()
             print(help)
