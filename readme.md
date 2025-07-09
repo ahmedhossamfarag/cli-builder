@@ -1,4 +1,3 @@
-/*************  ✨ Windsurf Command ⭐  *************/
 # cli-builder
 
 cli-builder is a command line interface builder for swift. It helps you define a cli interface with a simple and intuitive api.
